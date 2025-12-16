@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="header-content">
+        <div class="logo">Admin Panel</div>
+        <a href="{% url 'main:admin_logout' %}" class="btn btn-danger">Chiqish</a>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 40px;">
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <h2 class="card-header" style="margin: 0;">O'qituvchilar</h2>
+            <a href="{% url 'main:add_teacher' %}" class="btn btn-success">+ O'qituvchi qo'shish</a>
+        </div>
+
+        {% if teachers %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>№</th>
+                        <th>To'liq ism</th>
+                        <th>Username</th>
+                        <th>Qo'shilgan sana</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for teacher in teachers %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ teacher.full_name }}</td>
+                        <td>{{ teacher.username }}</td>
+                        <td>{{ teacher.created_at|date:"d.m.Y H:i" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="text-align: center; color: var(--text-secondary); padding: 40px;">
+            Hozircha o'qituvchilar yo'q. Yangi o'qituvchi qo'shing!
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

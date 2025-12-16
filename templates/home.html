@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}Bosh Sahifa - Test Platformasi{% endblock %}
+
+{% block content %}
+<div class="hero">
+    <div class="container">
+        <h1 class="hero-title">Bilimingizni Sinovdan O'tkazing</h1>
+        <p class="hero-subtitle">O'qituvchilar uchun qulay test yaratish tizimi va o'quvchilar uchun xavfsiz imtihon
+            platformasi.</p>
+        <div class="hero-buttons">
+            <a href="#roles" class="btn btn-primary" id="startBtn">Boshlash</a>
+        </div>
+    </div>
+</div>
+
+<div id="roles" class="role-cards" style="display: none;">
+    <div class="role-card">
+        <div class="role-icon">👨‍💼</div>
+        <h2 class="role-title">Admin</h2>
+        <p class="role-description">Tizimni boshqarish</p>
+        <a href="{% url 'main:admin_login' %}" class="btn btn-primary">Kirish</a>
+    </div>
+
+    <div class="role-card">
+        <div class="role-icon">👨‍🏫</div>
+        <h2 class="role-title">O'qituvchi</h2>
+        <p class="role-description">Test yaratish va tahlil</p>
+        <a href="{% url 'main:teacher_login' %}" class="btn btn-primary">Kirish</a>
+    </div>
+
+    <div class="role-card">
+        <div class="role-icon">👨‍🎓</div>
+        <h2 class="role-title">O'quvchi</h2>
+        <p class="role-description">Test ishlash</p>
+        <a href="{% url 'main:student_join' %}" class="btn btn-primary">Kirish</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.getElementById('startBtn').addEventListener('click', function (e) {
+        e.preventDefault();
+        const rolesDiv = document.getElementById('roles');
+        rolesDiv.style.display = 'grid';
+        rolesDiv.scrollIntoView({ behavior: 'smooth' });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}O'qituvchi qo'shish{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="header-content">
+        <div class="logo">Admin Panel</div>
+        <a href="{% url 'main:admin_dashboard' %}" class="btn btn-secondary">Dashboard</a>
+    </div>
+</div>
+
+<div class="container" style="max-width: 600px; margin-top: 40px;">
+    <div class="card">
+        <h2 class="card-header">O'qituvchi qo'shish</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">To'liq ism</label>
+                <input type="text" name="full_name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Username</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Parol</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" class="btn btn-success" style="flex: 1;">Qo'shish</button>
+                <a href="{% url 'main:admin_dashboard' %}" class="btn btn-secondary" style="flex: 1;">Orqaga</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

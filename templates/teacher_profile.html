@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}O'qituvchi Profil{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="header-content">
+        <div class="logo">{{ teacher.full_name }}</div>
+        <a href="{% url 'main:teacher_logout' %}" class="btn btn-danger">Chiqish</a>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 40px;">
+    <div class="role-cards" style="display: grid; margin-top: 0;">
+        <div class="role-card">
+            <div class="role-icon">📝</div>
+            <h2 class="role-title">Test yaratish</h2>
+            <p class="role-description">Qo'lda test yaratish</p>
+            <a href="{% url 'main:create_test' %}" class="btn btn-primary">Yaratish</a>
+        </div>
+
+        <div class="role-card">
+            <div class="role-icon">📄</div>
+            <h2 class="role-title">Word yuklash</h2>
+            <p class="role-description">Word fayldan test yuklash</p>
+            <a href="{% url 'main:upload_word_test' %}" class="btn btn-primary">Yuklash</a>
+        </div>
+    </div>
+
+    <div class="card" style="margin-top: 30px;">
+        <h2 class="card-header">Mening Testlarim</h2>
+
+        {% if tests %}
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Test nomi</th>
+                        <th>Test ID</th>
+                        <th>Timer</th>
+                        <th>Savollar</th>
+                        <th>Status</th>
+                        <th>Amallar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for test in tests %}
+                    <tr>
+                        <td>{{ test.name }}</td>
+                        <td><span class="badge badge-primary">{{ test.test_id }}</span></td>
+                        <td>{{ test.timer }} daqiqa</td>
+                        <td>{{ test.questions.count }} ta</td>
+                        <td>
+                            {% if test.is_active %}
+                            <span class="badge badge-success">Faol</span>
+                            {% else %}
+                            <span class="badge badge-warning">Nofaol</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 5px; flex-wrap: wrap;">
+                                <a href="{% url 'main:test_results' test.id %}" class="btn btn-secondary"
+                                    style="padding: 8px 16px;">Natijalar</a>
+                                {% if test.is_active %}
+                                <a href="{% url 'main:stop_test' test.id %}" class="btn btn-danger"
+                                    style="padding: 8px 16px;"
+                                    onclick="return confirm('Testni to\'xtatmoqchimisiz?')">To'xtatish</a>
+                                {% else %}
+                                <a href="{% url 'main:start_test' test.id %}" class="btn btn-success"
+                                    style="padding: 8px 16px;">Boshlash</a>
+                                {% endif %}
+                                <a href="{% url 'main:delete_test' test.id %}" class="btn btn-danger"
+                                    style="padding: 8px 16px; background: #dc2626;"
+                                    onclick="return confirm('Testni o\'chirmoqchimisiz? Bu amalni qaytarib bo\'lmaydi!')">O'chirish</a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p style="text-align: center; color: var(--text-secondary); padding: 40px;">
+            Hozircha testlar yo'q. Yangi test yarating!
+        </p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

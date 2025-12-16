@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+
+{% block title %}Test yaratish{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="header-content">
+        <div class="logo">Test yaratish</div>
+        <a href="{% url 'main:teacher_profile' %}" class="btn btn-secondary">Orqaga</a>
+    </div>
+</div>
+
+<div class="container" style="max-width: 800px; margin-top: 40px;">
+    <div class="card">
+        <h2 class="card-header">Yangi test yaratish</h2>
+
+        <form method="post" id="testForm">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Test nomi</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Izoh (ixtiyoriy)</label>
+                <textarea name="description" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Test ID</label>
+                <input type="text" name="test_id" class="form-control" placeholder="Masalan: TEST001" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Test paroli</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Timer (daqiqalarda)</label>
+                <input type="number" name="timer" class="form-control" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Savollar soni</label>
+                <input type="number" id="questionCount" class="form-control" min="1" max="100" value="5" required>
+                <button type="button" class="btn btn-primary" onclick="generateQuestions()"
+                    style="margin-top: 10px;">Savollar yaratish</button>
+            </div>
+
+            <div id="questionsContainer"></div>
+
+            <input type="hidden" name="question_count" id="hiddenQuestionCount" value="0">
+
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="submit" class="btn btn-success" style="flex: 1;">Testni saqlash</button>
+                <a href="{% url 'main:teacher_profile' %}" class="btn btn-secondary" style="flex: 1;">Bekor qilish</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function generateQuestions() {
+        const count = document.getElementById('questionCount').value;
+        const container = document.getElementById('questionsContainer');
+        document.getElementById('hiddenQuestionCount').value = count;
+
+        container.innerHTML = '';
+
+        for (let i = 1; i <= count; i++) {
+            const questionDiv = document.createElement('div');
+            questionDiv.className = 'question-card';
+            questionDiv.style.marginTop = '30px';
+
+            questionDiv.innerHTML = `
+            <h3 style="color: var(--primary-light); margin-bottom: 20px;">Savol ${i}</h3>
+            
+            <div class="form-group">
+                <label class="form-label">Savol matni</label>
+                <textarea name="question_${i}" class="form-control" required></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">A) variant</label>
+                <input type="text" name="option_a_${i}" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">B) variant</label>
+                <input type="text" name="option_b_${i}" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">C) variant</label>
+                <input type="text" name="option_c_${i}" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">D) variant</label>
+                <input type="text" name="option_d_${i}" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">To'g'ri javob</label>
+                <select name="correct_${i}" class="form-control" required>
+                    <option value="">Tanlang</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                </select>
+            </div>
+        `;
+
+            container.appendChild(questionDiv);
+        }
+    }
+</script>
+{% endblock %}

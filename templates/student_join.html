@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Test join{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin-top: 100px;">
+    <div class="card">
+        <h2 class="card-header">Testga kirish</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Ism Familiya</label>
+                <input type="text" name="student_name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Test ID</label>
+                <input type="text" name="test_id" class="form-control" placeholder="Masalan: TEST001" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Test paroli</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Kirish</button>
+        </form>
+
+        <div style="margin-top: 20px; text-align: center;">
+            <a href="{% url 'main:home' %}" class="btn btn-secondary">Orqaga</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

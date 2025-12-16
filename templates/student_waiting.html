@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Kutish{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 600px; margin-top: 100px;">
+    <div class="card" style="text-align: center;">
+        <div class="spinner" style="width: 60px; height: 60px; margin: 20px auto;"></div>
+        <h2 class="card-header">Iltimos kuting...</h2>
+        <p style="color: var(--text-secondary); font-size: 18px; margin: 20px 0;">
+            {{ result.student_name }}, siz <strong>{{ result.test.name }}</strong> testiga muvaffaqiyatli kirdingiz.
+        </p>
+        <p style="color: var(--warning-color); font-size: 16px;">
+            O'qituvchi testni faollashtirguncha kutib turing...
+        </p>
+
+        <div style="margin-top: 40px; padding: 20px; background: rgba(99, 102, 241, 0.1); border-radius: 12px;">
+            <h3 style="color: var(--primary-light); margin-bottom: 10px;">Test haqida</h3>
+            <p style="color: var(--text-secondary);">
+                Savollar soni: <strong>{{ result.total_questions }}</strong><br>
+                Timer: <strong>{{ result.test.timer }} daqiqa</strong>
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Har 3 sekundda test faolligini tekshirish
+    setInterval(function () {
+        fetch('/check-test-status/{{ session_id }}/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.is_active) {
+                    window.location.href = '{% url "main:take_test" session_id %}';
+                }
+            });
+    }, 3000);
+</script>
+{% endblock %}

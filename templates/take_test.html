@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}Test yechish{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="header-content">
+        <div class="logo">{{ result.test.name }}</div>
+        <div class="timer" id="timer">{{ result.test.timer }}:00</div>
+    </div>
+</div>
+
+<div class="container" style="margin-top: 40px; padding-bottom: 100px;">
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+            <div>
+                <h2 class="card-header" style="margin: 0;">{{ result.student_name }}</h2>
+                <p style="color: var(--text-secondary); margin-top: 8px;">
+                    Jami savollar: {{ questions.count }}
+                </p>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressBar" style="width: 0%;"></div>
+        </div>
+
+        <form id="testForm">
+            {% for question in questions %}
+            <div class="question-card" data-question-id="{{ forloop.counter }}">
+                <span class="question-number">Savol {{ question.order }}</span>
+                <p class="question-text">{{ question.question_text }}</p>
+
+                <div class="options">
+                    <label class="option">
+                        <input type="radio" name="question_{{ question.id }}" value="A"
+                            data-question-id="{{ question.id }}">
+                        <span>A) {{ question.option_a }}</span>
+                    </label>
+
+                    <label class="option">
+                        <input type="radio" name="question_{{ question.id }}" value="B"
+                            data-question-id="{{ question.id }}">
+                        <span>B) {{ question.option_b }}</span>
+                    </label>
+
+                    <label class="option">
+                        <input type="radio" name="question_{{ question.id }}" value="C"
+                            data-question-id="{{ question.id }}">
+                        <span>C) {{ question.option_c }}</span>
+                    </label>
+
+                    <label class="option">
+                        <input type="radio" name="question_{{ question.id }}" value="D"
+                            data-question-id="{{ question.id }}">
+                        <span>D) {{ question.option_d }}</span>
+                    </label>
+                </div>
+            </div>
+            {% endfor %}
+        </form>
+
+        <div style="position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 100;">
+            <button onclick="finishTest()" class="btn btn-success" style="font-size: 18px; padding: 16px 48px;">
+                Testni yakunlash
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const sessionId = '{{ session_id }}';
+    const timerMinutes = {{ result.test.timer }};
+    let timeLeft = timerMinutes * 60; // Convert to seconds
+
+    // Timer
+    const timerElement = document.getElementById('timer');
+    const timerInterval = setInterval(() => {
+        timeLeft--;
+
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+
+        timerElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            finishTest();
+        }
+    }, 1000);
+
+    // Save answer on selection
+    document.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', function () {
+            const questionId = this.dataset.questionId;
+            const answer = this.value;
+
+            // Save answer via AJAX
+            fetch('/student/submit/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    session_id: sessionId,
+                    question_id: questionId,
+                    answer: answer
+                })
+            });
+
+            // Update progress
+            updateProgress();
+
+            // Visual feedback
+            const options = this.closest('.options').querySelectorAll('.option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            this.closest('.option').classList.add('selected');
+        });
+    });
+
+    function updateProgress() {
+        const totalQuestions = document.querySelectorAll('.question-card').length;
+        const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
+        const percentage = (answeredQuestions / totalQuestions) * 100;
+        document.getElementById('progressBar').style.width = percentage + '%';
+    }
+
+    function finishTest() {
+        if (confirm('Testni yakunlamoqchimisiz?')) {
+            clearInterval(timerInterval);
+            window.location.href = '/student/finish/{{ session_id }}/';
+        }
+    }
+
+    // Initialize progress on page load
+    updateProgress();
+</script>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Word fayldan test yuklash{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="header-content">
+        <div class="logo">Test yaratish</div>
+        <a href="{% url 'main:teacher_profile' %}" class="btn btn-secondary">Orqaga</a>
+    </div>
+</div>
+
+<div class="container" style="max-width: 700px; margin-top: 40px;">
+    <div class="card">
+        <h2 class="card-header">Word fayldan test yuklash</h2>
+
+        <div class="alert alert-warning" style="margin-bottom: 20px; position: static;">
+            <strong>Format:</strong> Har bir savol yangi qatordan boshlanishi kerak. Variantlar A), B), C), D)
+            ko'rinishida bo'lishi kerak.
+            To'g'ri javob <strong>*</strong> belgisi bilan belgilanadi. Masalan: <strong>*A)</strong> To'g'ri variant.
+        </div>
+
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label class="form-label">Test nomi</label>
+                <input type="text" name="name" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Izoh (ixtiyoriy)</label>
+                <textarea name="description" class="form-control"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Test ID</label>
+                <input type="text" name="test_id" class="form-control" placeholder="Masalan: TEST001" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Test paroli</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Timer (daqiqalarda)</label>
+                <input type="number" name="timer" class="form-control" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Word fayl (.docx)</label>
+                <input type="file" name="word_file" class="form-control" accept=".docx" required>
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" class="btn btn-success" style="flex: 1;">Yuklash va yaratish</button>
+                <a href="{% url 'main:teacher_profile' %}" class="btn btn-secondary" style="flex: 1;">Bekor qilish</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
